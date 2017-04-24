@@ -1,0 +1,17 @@
+language: clojure
+jdk:
+- oraclejdk8
+lein: 2.7.1
+cache:
+  directories:
+  - $HOME/.lein
+  - $HOME/.m2
+script:
+- lein cljfmt check
+- lein eastwood
+- lein test
+after_success:
+- CLOVERAGE_VERSION=1.0.9 lein with-profile test cloverage --codecov
+- bash <(curl -s https://codecov.io/bash) -f target/coverage/codecov.json
+notifications:
+  email: false

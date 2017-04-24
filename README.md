@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/ehashman/clj-helper.svg?branch=master)](https://travis-ci.org/ehashman/clj-helper)
+[![codecov](https://codecov.io/gh/ehashman/clj-helper/branch/master/graph/badge.svg)](https://codecov.io/gh/ehashman/clj-helper)
+
 # clj-helper
 
 A utility for helping package Leiningen Clojure projects for Debian.
