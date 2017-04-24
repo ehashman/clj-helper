@@ -1,6 +1,6 @@
 (defproject clj-helper "0.1.0-SNAPSHOT"
-  :description "Helps package Clojure for Debian"
-  :url "http://example.com/FIXME"
+  :description "Helps you package Clojure projects for Debian"
+  :url "https://github.com/ehashman/clj-helper"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.8.0"]
