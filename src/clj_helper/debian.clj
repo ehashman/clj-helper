@@ -40,7 +40,6 @@
                     (format "debian/%%s.%s" filetype)
                     package-name))
 
-
 ;;; Debian file generators
 
 (defn make-compat!

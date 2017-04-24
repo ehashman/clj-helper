@@ -6,6 +6,10 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [environ "1.1.0"]
                  [selmer "1.10.7"]]
+  :plugins [[lein-cljfmt "0.5.6" :exclusions [com.google.javascript/closure-compiler
+                                              org.clojure/clojurescript]]
+            [jonase/eastwood "0.2.3"]
+            [lein-cloverage "1.0.9"]]
   :main ^:skip-aot clj-helper.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

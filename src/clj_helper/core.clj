@@ -63,22 +63,22 @@
           (println "Enter the project description, ending with a blank line:")
           (loop [input (read-line)
                  desc ""]
-           (if (s/blank? input)
-             desc
-             (recur (read-line) (str desc "\n" input)))))
+            (if (s/blank? input)
+              desc
+              (recur (read-line) (str desc "\n" input)))))
         description (s/trim raw-description)]
 
-     {:package-name package-name
-      :dependencies dependencies
-      :classpaths classpaths
-      :maintainer maintainer
-      :uploaders uploaders
-      :homepage homepage
-      :description description
-      :copyright-year copyright-year
-      :upstream-author-name upstream-author-name
-      :upstream-author-email upstream-author-email
-      :upstream-license upstream-license}))
+    {:package-name package-name
+     :dependencies dependencies
+     :classpaths classpaths
+     :maintainer maintainer
+     :uploaders uploaders
+     :homepage homepage
+     :description description
+     :copyright-year copyright-year
+     :upstream-author-name upstream-author-name
+     :upstream-author-email upstream-author-email
+     :upstream-license upstream-license}))
 
 (defn -main
   "When run in the root of a Clojure repository, packaged with
