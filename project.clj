@@ -12,4 +12,5 @@
             [lein-cloverage "1.0.9"]]
   :main ^:skip-aot clj-helper.core
   :target-path "target/%s"
-  :profiles {:uberjar {:aot :all}})
+  :profiles {:uberjar {:aot :all}
+             :test {:dependencies [[me.raynes/fs "1.4.6"]]}})

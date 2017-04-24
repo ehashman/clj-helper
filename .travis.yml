@@ -8,7 +8,7 @@ cache:
   - $HOME/.m2
 script:
 - lein cljfmt check
-- lein eastwood
+- lein with-profile test eastwood
 - lein test
 after_success:
 - CLOVERAGE_VERSION=1.0.9 lein with-profile test cloverage --codecov
