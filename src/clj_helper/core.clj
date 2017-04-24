@@ -100,6 +100,6 @@
     (make-changelog!)
     (println)
     (println "Once you have committed these changes to version control, you may"
-             "build your package with `gbp gbp buildpackage -uc -us`.")
+             "build your package with `gbp buildpackage -uc -us`.")
     (shutdown-agents)))  ;; Required to ensure the call to `sh` returns
                          ;; and doesn't wait 60s; see CLJ-959 for details

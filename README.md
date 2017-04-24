@@ -59,7 +59,7 @@ ehashman@corn-syrup:~/debian/quoin$ java -jar ../clj-helper-0.1.0-standalone.jar
     Moving pom to debian/pom.xml...
     Now you can create your Debian changelog with `dch --create`.
 
-    Once you have committed these changes to version control, you may build your package with `gbp gbp buildpackage -uc -us`.
+    Once you have committed these changes to version control, you may build your package with `gbp buildpackage -uc -us`.
 ehashman@corn-syrup:~/debian/quoin$ dch --create
 ehashman@corn-syrup:~/debian/quoin$ git add debian/
 ehashman@corn-syrup:~/debian/quoin$ git commit -am "Add debian packaging"
