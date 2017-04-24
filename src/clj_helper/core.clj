@@ -1,128 +1,63 @@
 (ns clj-helper.core
   (:require
-   [clojure.java.io :refer [file make-parents resource]]
-   [clojure.java.shell :refer [sh]]
    [clojure.string :as s]
-   [selmer.parser :as sp])
+   [environ.core :refer [env]]
+   [clj-helper.debian :refer :all])
   (:gen-class))
 
 (defn get-user-input!
+  "Prints a direction msg for the user, displaying the default value
+  chosen (if any), and requests their input."
   [msg default]
   (println (str msg " [" default "]"))
   (let [input (read-line)]
     (if (s/blank? input) default input)))
 
-(defn really-write-to-file!
-  [package-name destination output]
-  (let [real-destination (format destination package-name)]
-    (make-parents real-destination)
-    (spit real-destination output)))
-
-(defn render-template!
-  [data template-src destination package-name]
-  (let [template (slurp (resource template-src))
-        output (sp/render template data)]
-    (really-write-to-file! package-name destination output)))
-
-(defn render-template-for-package-file!
-  [{:keys [package-name] :as user-data} filetype]
-  (render-template! user-data
-                    (format "templates/package.%s.j2" filetype)
-                    (format "debian/%%s.%s" filetype)
-                    package-name))
-
-(defn copy-file!
-  [filename]
-  (let [source (format "templates/%s" filename)
-        destination (format "debian/%s" filename)]
-    (really-write-to-file! nil destination (slurp (resource source)))))
-
-(defn make-control!
-  [user-data]
-  (let [control-data (assoc user-data :dep-separator ",\n")]
-    (render-template! control-data "templates/control.j2" "debian/control" nil)))
-
-(defn make-copyright!
-  [user-data]
-  (render-template! user-data "templates/copyright.j2" "debian/copyright" nil))
-
-(defn make-classpath!
-  [{:keys [package-name dependencies classpaths]}]
-  (really-write-to-file! package-name
-                         "debian/%s.classpath"
-                         (s/join " " classpaths)))
-
-(defn make-doc-base!
-  [user-data]
-  (render-template-for-package-file! user-data "doc-base"))
-
-(defn make-docs!
-  [{:keys [package-name]}]
-  (let [source "templates/package.docs"
-        destination "debian/%s.docs"]
-    (really-write-to-file! package-name destination (slurp (resource source)))))
-
-(defn make-jlibs!
-  [user-data]
-  (render-template-for-package-file! user-data "jlibs"))
-
-(defn generate-pom!
-  []
-  (println "Generating pom...")
-  (println (:out (sh "lein" "pom")))
-  (println "Moving pom to debian/pom.xml...")
-  (.renameTo (file "pom.xml") (file "debian/pom.xml")))
-
-(defn make-poms!
-  [user-data]
-  (render-template-for-package-file! user-data "poms"))
-
-(defn make-rules!
-  [{:keys [classpaths] :as user-data}]
-  (let [export-classpath (s/join ":" classpaths)
-        rules-data (assoc user-data :export-classpath export-classpath)
-        executable? true
-        owner-only? false]
-    (render-template! rules-data "templates/rules.j2" "debian/rules" nil)
-    (.setExecutable (file "debian/rules") executable? owner-only?)))
-
-(defn make-compat!
-  []
-  (copy-file! "compat"))
-
-(defn make-source!
-  []
-  (copy-file! "source/format"))
-
-(defn make-changelog!
-  []
-  (println "Now you can create your Debian changelog with `dch --create`."))
-
 (defn get-user-data!
+  "Prompts the user for all data required for generating packaging
+  files."
   []
   (let [cwd (System/getProperty "user.dir")
         relative-cwd (re-find #"[^/]+$" cwd)
+        user-name (:debfullname env)
+        user-email (:debemail env)
+
+        ;; Upstream package info
         package-name
         (get-user-input! "Enter the source package's name:" relative-cwd)
+        homepage
+        (get-user-input! "Enter the source package's homepage:" nil)
+        copyright-year
+        (get-user-input! "Enter the year this release is copyrighted:" nil)
+        upstream-author-name
+        (get-user-input! "Enter the upstream author's name:" nil)
+        upstream-author-email
+        (get-user-input! "Enter the upstream author's email:" nil)
+        upstream-license
+        (get-user-input! "Enter the upstream license, in abbreviated form:"
+                         "EPL-1.0")
+
+        ;; Dependencies and build stuff
         raw-dependencies
-        (-> (get-user-input!
-             "Enter the names of any dependencies, separated by commas:"
-             "")
-            (s/split #","))
-        dependencies (->> raw-dependencies
+        (get-user-input!
+         "Enter the names of any dependencies, separated by commas:"
+         "")  ;; avoid NPEs on s/split
+        dependencies (->> (s/split raw-dependencies #",")
                           (map s/trim)
                           (remove s/blank?))
         full-deps (cons "clojure" dependencies)
         classpaths (map #(format "/usr/share/java/%s.jar" %) full-deps)
+
+        ;; Package-specific info
         maintainer
         (get-user-input!
          "Enter the package maintainer(s):"
          "Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>")
         uploaders
         (get-user-input! "Enter the package uploader(s):"
-                         "Elana Hashman <debian@hashman.ca>")
-        homepage
-        (get-user-input! "Enter the project's homepage:" nil)
+                         (and user-name
+                              user-email
+                              (format "%s <%s>" user-name user-email)))
         raw-description
         (do
           (println "Enter the project description, ending with a blank line:")
@@ -131,16 +66,7 @@
            (if (s/blank? input)
              desc
              (recur (read-line) (str desc "\n" input)))))
-        description (s/trim raw-description)
-        copyright-year
-        (get-user-input! "Enter the year the project is copyrighted:" nil)
-        upstream-author-name
-        (get-user-input! "Enter the upstream author's name:" nil)
-        upstream-author-email
-        (get-user-input! "Enter the upstream author's email:" nil)
-        upstream-license
-        (get-user-input! "Enter the upstream license, in abbreviated form:"
-                         "EPL-1.0")]
+        description (s/trim raw-description)]
 
      {:package-name package-name
       :dependencies dependencies
@@ -155,21 +81,25 @@
       :upstream-license upstream-license}))
 
 (defn -main
+  "When run in the root of a Clojure repository, packaged with
+  Leiningen, generates a debian/ directory and all necessary files
+  for packaging."
   [& args]
   (let [user-data (get-user-data!)]
-    (make-control! user-data)
-    (make-copyright! user-data)
-    (make-classpath! user-data)
-    (make-doc-base! user-data)
-    (make-docs! user-data)
-    (make-jlibs! user-data)
-    (generate-pom!)
-    (make-poms! user-data)
-    (make-rules! user-data)
     (make-compat!)
     (make-source!)
+    (make-docs! user-data)
+    (make-classpath! user-data)
+    (make-control! user-data)
+    (make-copyright! user-data)
+    (make-rules! user-data)
+    (make-doc-base! user-data)
+    (make-jlibs! user-data)
+    (make-poms! user-data)
+    (generate-pom!)
     (make-changelog!)
     (println)
     (println "Once you have committed these changes to version control, you may"
              "build your package with `gbp gbp buildpackage -uc -us`.")
-    (shutdown-agents)))
+    (shutdown-agents)))  ;; Required to ensure the call to `sh` returns
+                         ;; and doesn't wait 60s; see CLJ-959 for details

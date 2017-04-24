@@ -8,8 +8,8 @@ Build-Depends:
  javahelper (>= 0.32),
  maven-repo-helper (>= 1.7),
  default-jdk,
- clojure (>= 1.5),{% for dep in dependencies %}
- lib{{ dep }}-clojure{% if not forloop.last %}{{ dep-separator }}{% endif %}{% endfor %}
+ clojure (>= 1.5){% if dependencies %},
+{{ dependencies }}{% endif %}
 Standards-Version: 3.9.8
 Vcs-Git: https://anonscm.debian.org/git/pkg-java/{{ package-name }}-clojure.git
 Vcs-Browser: https://anonscm.debian.org/cgit/pkg-java/{{ package-name }}-clojure.git;a=summary
