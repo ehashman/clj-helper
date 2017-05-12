@@ -32,6 +32,7 @@ Here is how I might use this tool to package and build an existing Clojure
 project.
 
 ```
+ehashman@corn-syrup:~/debian/quoin$ export DEBFULLNAME="Elana Hashman" DEBEMAIL=debian@hashman.ca
 ehashman@corn-syrup:~/debian/quoin$ java -jar ../clj-helper-0.1.0-standalone.jar
     Enter the source package's name: [quoin]
 
@@ -42,12 +43,12 @@ ehashman@corn-syrup:~/debian/quoin$ java -jar ../clj-helper-0.1.0-standalone.jar
     Enter the upstream author's name: []
     David Santiago
     Enter the upstream author's email: []
-    <david.santiago@gmail.com>
+    david.santiago@gmail.com
     Enter the upstream license, in abbreviated form: [EPL-1.0]
 
     Enter the names of any dependencies, separated by commas: []
 
-    Enter the package maintainer(s): [Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>]
+    Enter the package maintainer(s): [Debian Clojure Maintainers <pkg-clojure-maintainers@lists.alioth.debian.org>]
 
     Enter the package uploader(s): [Elana Hashman <debian@hashman.ca>]
 
