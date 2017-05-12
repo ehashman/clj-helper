@@ -32,7 +32,9 @@
         upstream-author-name
         (get-user-input! "Enter the upstream author's name:" nil)
         upstream-author-email
-        (get-user-input! "Enter the upstream author's email:" nil)
+        (when-let [email (get-user-input! "Enter the upstream author's email:"
+                                          nil)]
+          (str "<" email ">"))
         upstream-license
         (get-user-input! "Enter the upstream license, in abbreviated form:"
                          "EPL-1.0")
@@ -52,7 +54,7 @@
         maintainer
         (get-user-input!
          "Enter the package maintainer(s):"
-         "Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>")
+         "Debian Clojure Maintainers <pkg-clojure-maintainers@lists.alioth.debian.org>")
         uploaders
         (get-user-input! "Enter the package uploader(s):"
                          (and user-name

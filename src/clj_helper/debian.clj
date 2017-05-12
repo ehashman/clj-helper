@@ -12,7 +12,8 @@
   into the path if necessary."
   [package-name destination output]
   (let [cwd (System/getProperty "user.dir")  ;; lets us change CWD for writing
-        real-destination (format (str cwd "/" destination) package-name)]
+        real-destination (format (str cwd "/" destination)
+                                 (str "lib" package-name))]
     (make-parents real-destination)
     (spit real-destination output)))
 
