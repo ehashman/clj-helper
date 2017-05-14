@@ -1,3 +1,7 @@
+# 0.2.1
+
+- Fix typo in doc-base.
+
 # 0.2.0
 
 - Improve output packaging, fixing various typos.
