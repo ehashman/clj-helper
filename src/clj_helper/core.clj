@@ -99,7 +99,6 @@
     (make-copyright! user-data)
     (make-rules! user-data)
     (make-doc-base! user-data)
-    (make-jlibs! user-data)
     (make-poms! user-data)
     (generate-pom!)
     (make-changelog!)

@@ -100,11 +100,6 @@
   [user-data]
   (render-template-for-package-file! user-data "doc-base"))
 
-(defn make-jlibs!
-  "Makes the debian/PACKAGENAME.jlibs file."
-  [user-data]
-  (render-template-for-package-file! user-data "jlibs"))
-
 (defn make-poms!
   "Makes the debian/PACKAGENAME.poms file."
   [user-data]

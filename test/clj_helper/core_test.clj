@@ -42,7 +42,6 @@
             "output/debian/liboutput-clojure.classpath"
             "output/debian/liboutput-clojure.doc-base"
             "output/debian/liboutput-clojure.docs"
-            "output/debian/liboutput-clojure.jlibs"
             "output/debian/liboutput-clojure.poms"
             "output/debian/pom.xml"
             "output/debian/rules"

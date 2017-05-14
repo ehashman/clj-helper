@@ -10,7 +10,7 @@ DEB_UPSTREAM_VERSION := $(shell echo $(DEB_NOEPOCH_VERSION) | sed 's/-[^-]*$$//'
 PRODUCED_JAR={{ jar-name }}.jar
 
 %:
-	dh $@ --with javahelper --with jh_maven_repo_helper
+	dh $@ --with javahelper --with maven_repo_helper
 
 override_jh_build:
 	jar cf $(PRODUCED_JAR) -C src .
