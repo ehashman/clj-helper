@@ -1,4 +1,4 @@
-(defproject clj-helper "0.1.1-SNAPSHOT"
+(defproject clj-helper "0.2.0"
   :description "Helps you package Clojure projects for Debian"
   :url "https://github.com/ehashman/clj-helper"
   :license {:name "Eclipse Public License"
