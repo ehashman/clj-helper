@@ -6,4 +6,4 @@ Section: Programming
 
 Format: Text
 Index: /usr/share/doc/{{ package-name }}/README.md
-Files: /usr/share/doc/{{ package-name }}/README.md
+Files: /usr/share/doc/{{ package-name }}/README.md{% if readme-size >= 4096 %}.gz{% endif %}

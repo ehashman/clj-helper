@@ -1,0 +1,21 @@
+Source: output-clojure
+Section: java
+Priority: optional
+Maintainer: Debian Clojure Maintainers <pkg-clojure-maintainers@lists.alioth.debian.org>
+Uploaders: 
+Build-Depends:
+ debhelper (>= 10),
+ javahelper (>= 0.32),
+ maven-repo-helper (>= 1.7),
+ default-jdk,
+ clojure (>= 1.5)
+Standards-Version: 3.9.8
+Vcs-Git: https://anonscm.debian.org/git/pkg-clojure/output-clojure.git
+Vcs-Browser: https://anonscm.debian.org/git/pkg-clojure/output-clojure.git
+Homepage: 
+
+Package: liboutput-clojure
+Architecture: all
+Depends: ${java:Depends}, ${misc:Depends}
+Recommends: ${java:Recommends}
+Description: 

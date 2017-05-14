@@ -13,9 +13,12 @@
       (let [cwd (System/getProperty "user.dir")
             test-dir (str cwd "/output")
             test-project (slurp (resource "test/project.clj"))
-            project-dst (str test-dir "/project.clj")]
+            test-readme (slurp (resource "test/README.md"))
+            project-dst (str test-dir "/project.clj")
+            readme-dst (str test-dir "/README.md")]
         (make-parents project-dst)
         (spit project-dst test-project)
+        (spit readme-dst test-readme)
         (System/setProperty "user.dir" test-dir)
         (let [output (with-out-str (-main))]
           (println output)
@@ -47,4 +50,16 @@
             "output/debian/rules"
             "output/debian/source/format")
           (is (executable? "output/debian/rules"))
+          (are [a b] (= (slurp (resource b)) (slurp a))
+            "output/project.clj" "test/project.clj"
+            "output/debian/compat" "test/debian/compat"
+            "output/debian/control" "test/debian/control"
+            "output/debian/copyright" "test/debian/copyright"
+            "output/debian/liboutput-clojure.classpath" "test/debian/liboutput-clojure.classpath"
+            "output/debian/liboutput-clojure.doc-base" "test/debian/liboutput-clojure.doc-base"
+            "output/debian/liboutput-clojure.docs" "test/debian/liboutput-clojure.docs"
+            "output/debian/liboutput-clojure.poms" "test/debian/liboutput-clojure.poms"
+            "output/debian/pom.xml" "test/debian/pom.xml"
+            "output/debian/rules" "test/debian/rules"
+            "output/debian/source/format" "test/debian/source/format")
           (delete-dir test-dir))))))

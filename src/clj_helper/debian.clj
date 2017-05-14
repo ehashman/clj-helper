@@ -98,7 +98,12 @@
 (defn make-doc-base!
   "Makes the debian/PACKAGENAME.doc-base file."
   [user-data]
-  (render-template-for-package-file! user-data "doc-base"))
+  (let [cwd (System/getProperty "user.dir")
+        readme-path (str cwd "/README.md")
+        readme-size (try (-> readme-path slurp count)
+                         (catch Exception _ 0))
+        user-data-with-size (assoc user-data :readme-size readme-size)]
+    (render-template-for-package-file! user-data-with-size "doc-base")))
 
 (defn make-poms!
   "Makes the debian/PACKAGENAME.poms file."
