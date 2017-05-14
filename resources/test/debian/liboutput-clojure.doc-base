@@ -5,5 +5,5 @@ Abstract: output-clojure README
 Section: Programming
 
 Format: Text
-Index: /usr/share/doc/liboutput-clojure/README.md
+Index: /usr/share/doc/liboutput-clojure/README.md.gz
 Files: /usr/share/doc/liboutput-clojure/README.md.gz

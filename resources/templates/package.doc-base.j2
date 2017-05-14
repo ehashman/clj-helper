@@ -5,5 +5,5 @@ Abstract: {{ source-package-name }} README
 Section: Programming
 
 Format: Text
-Index: /usr/share/doc/{{ package-name }}/README.md
+Index: /usr/share/doc/{{ package-name }}/README.md{% if readme-size >= 4096 %}.gz{% endif %}
 Files: /usr/share/doc/{{ package-name }}/README.md{% if readme-size >= 4096 %}.gz{% endif %}
