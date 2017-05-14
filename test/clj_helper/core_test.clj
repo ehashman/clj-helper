@@ -20,14 +20,14 @@
         (let [output (with-out-str (-main))]
           (println output)
           (are [msg] (s/includes? output msg)
-            "Enter the source package's name: [output]"
+            "Enter the project's short name (e.g. 'clj-http'): [output]"
             "Enter the source package's homepage: []"
             "Enter the year this release is copyrighted: []"
             "Enter the upstream author's name: []"
             "Enter the upstream author's email: []"
             "Enter the upstream license, in abbreviated form: [EPL-1.0]"
             "Enter the names of any dependencies, separated by commas: []"
-            "Enter the package maintainer(s): [Debian Java Maintainers <pkg-java-maintainers@lists.alioth.debian.org>]"
+            "Enter the package maintainer(s): [Debian Clojure Maintainers <pkg-clojure-maintainers@lists.alioth.debian.org>]"
             "Enter the package uploader(s): []"
             "Enter the project description, ending with a blank line:"
             "Generating pom..."
@@ -39,11 +39,11 @@
             "output/debian/compat"
             "output/debian/control"
             "output/debian/copyright"
-            "output/debian/output.classpath"
-            "output/debian/output.doc-base"
-            "output/debian/output.docs"
-            "output/debian/output.jlibs"
-            "output/debian/output.poms"
+            "output/debian/liboutput-clojure.classpath"
+            "output/debian/liboutput-clojure.doc-base"
+            "output/debian/liboutput-clojure.docs"
+            "output/debian/liboutput-clojure.jlibs"
+            "output/debian/liboutput-clojure.poms"
             "output/debian/pom.xml"
             "output/debian/rules"
             "output/debian/source/format")

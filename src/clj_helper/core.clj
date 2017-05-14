@@ -24,7 +24,8 @@
 
         ;; Upstream package info
         package-name
-        (get-user-input! "Enter the source package's name:" relative-cwd)
+        (get-user-input! "Enter the project's short name (e.g. 'clj-http'):"
+                         relative-cwd)
         homepage
         (get-user-input! "Enter the source package's homepage:" nil)
         copyright-year
@@ -70,7 +71,9 @@
               (recur (read-line) (str desc "\n" input)))))
         description (s/trim raw-description)]
 
-    {:package-name package-name
+    {:jar-name package-name
+     :source-package-name (str package-name "-clojure")
+     :package-name (str "lib" package-name "-clojure")
      :dependencies dependencies
      :classpaths classpaths
      :maintainer maintainer
