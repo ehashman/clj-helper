@@ -5,6 +5,31 @@
    [clj-helper.debian :refer :all])
   (:gen-class))
 
+(defn get-control-data
+  "Parses existing control data to help autocomplete information."
+  [control-data]
+  (let [raw-homepage (re-find #"(?m)^Homepage: .*$" control-data)
+        homepage (s/replace-first raw-homepage #"^Homepage: " "")
+        raw-description (->> (s/split-lines control-data)
+                             (drop-while
+                              (complement #(re-find #"^Description: " %))))
+        description (->> raw-description
+                         (map #(s/replace-first % #"^Description: " ""))
+                         (s/join "\n"))]
+    {:homepage homepage
+     :description description}))
+
+(defn get-copyright-data
+  "Parses existing copyright data to help autocomplete information."
+  [copyright-data]
+  (let [raw-copyright-str (re-find #"(?m)^Copyright: .*$" copyright-data)
+        copyright-string (s/replace-first raw-copyright-str #"^Copyright: " "")
+        [_ year author email]
+        (re-find #"^(\d{4}) ([a-zA-Z ]+) <(.*)>$" copyright-string)]
+    {:copyright-year year
+     :upstream-author-name author
+     :upstream-author-email email}))
+
 (defn get-user-input!
   "Prints a direction msg for the user, displaying the default value
   chosen (if any), and requests their input."
@@ -19,6 +44,14 @@
   []
   (let [cwd (System/getProperty "user.dir")
         relative-cwd (re-find #"[^/]+$" cwd)
+
+        control-data
+        (try (-> (str cwd "/debian/control") slurp get-control-data)
+             (catch Exception _ nil))
+        copyright-data
+        (try (-> (str cwd "/debian/copyright") slurp get-copyright-data)
+             (catch Exception _ nil))
+
         user-name (:debfullname env)
         user-email (:debemail env)
 
@@ -27,14 +60,18 @@
         (get-user-input! "Enter the project's short name (e.g. 'clj-http'):"
                          relative-cwd)
         homepage
-        (get-user-input! "Enter the source package's homepage:" nil)
+        (get-user-input! "Enter the source package's homepage:"
+                         (:homepage control-data))
         copyright-year
-        (get-user-input! "Enter the year this release is copyrighted:" nil)
+        (get-user-input! "Enter the year this release is copyrighted:"
+                         (:copyright-year copyright-data))
         upstream-author-name
-        (get-user-input! "Enter the upstream author's name:" nil)
+        (get-user-input! "Enter the upstream author's name:"
+                         (:upstream-author-name copyright-data))
         upstream-author-email
-        (when-let [email (get-user-input! "Enter the upstream author's email:"
-                                          nil)]
+        (when-let [email (get-user-input!
+                          "Enter the upstream author's email:"
+                          (:upstream-author-email copyright-data))]
           (str "<" email ">"))
         upstream-license
         (get-user-input! "Enter the upstream license, in abbreviated form:"
@@ -62,13 +99,14 @@
                               user-email
                               (format "%s <%s>" user-name user-email)))
         raw-description
-        (do
-          (println "Enter the project description, ending with a blank line:")
-          (loop [input (read-line)
-                 desc ""]
-            (if (s/blank? input)
-              desc
-              (recur (read-line) (str desc "\n" input)))))
+        (or (:description control-data)
+            (do
+              (println "Enter the project description, ending with a blank line:")
+              (loop [input (read-line)
+                     desc ""]
+                (if (s/blank? input)
+                  desc
+                  (recur (read-line) (str desc "\n" input))))))
         description (s/trim raw-description)]
 
     {:jar-name package-name
