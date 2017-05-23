@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 
 include /usr/share/javahelper/java-vars.mk
-export CLASSPATH=/usr/share/java/clojure.jar
 
 DEB_VERSION := $(shell dpkg-parsechangelog | egrep '^Version:' | cut -f 2 -d ' ')
 DEB_NOEPOCH_VERSION := $(shell echo $(DEB_VERSION) | cut -d: -f2-)
@@ -14,9 +13,6 @@ PRODUCED_JAR=output.jar
 
 override_jh_build:
 	jar cf $(PRODUCED_JAR) -C src .
-
-override_jh_classpath:
-	jh_classpath $(PRODUCED_JAR)
 
 override_jh_installlibs:
 	jh_installlibs $(PRODUCED_JAR)

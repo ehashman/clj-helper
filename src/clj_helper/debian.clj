@@ -62,10 +62,13 @@
 
 (defn make-classpath!
   "Makes the debian/PACKAGENAME.classpath file."
-  [{:keys [package-name dependencies classpaths]}]
-  (really-write-to-file! package-name
-                         "debian/%s.classpath"
-                         (s/join " " classpaths)))
+  [{:keys [jar-name package-name dependencies classpaths]}]
+  (let [jarfile (format "usr/share/java/%s.jar" jar-name)  ;; no leading /
+        classpath (->> (cons jarfile classpaths)
+                       (s/join " "))]
+    (really-write-to-file! package-name
+                           "debian/%s.classpath"
+                           (str classpath "\n"))))
 
 (defn make-control!
   "Makes the debian/control file."
@@ -87,12 +90,10 @@
 (defn make-rules!
   "Makes the debian/rules file and sets it as executable."
   [{:keys [classpaths] :as user-data}]
-  (let [export-classpath (s/join ":" classpaths)
-        rules-data (assoc user-data :export-classpath export-classpath)
-        cwd (System/getProperty "user.dir")
+  (let [cwd (System/getProperty "user.dir")
         executable? true
         owner-only? false]
-    (render-template! rules-data "templates/rules.j2" "debian/rules")
+    (render-template! user-data "templates/rules.j2" "debian/rules")
     (.setExecutable (file (str cwd "/debian/rules")) executable? owner-only?)))
 
 (defn make-doc-base!
