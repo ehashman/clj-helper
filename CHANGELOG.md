@@ -1,3 +1,8 @@
+# 0.3.0
+
+- Autocomplete existing control and copyright data, if present.
+- Fix classpath generation.
+
 # 0.2.1
 
 - Fix typo in doc-base.
